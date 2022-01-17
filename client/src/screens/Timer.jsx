@@ -37,6 +37,7 @@ const Timer = () => {
     }
   }, [time, sound, isWork, work])
 
+  // Dynamic title useEffect
   useEffect(() => {
     let title = isWork? "Working" : "Resting";
     document.title = title;
