@@ -1,5 +1,7 @@
 import { useParams } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { Howl } from 'howler';
+import tone from '../assets/tone.mp3';
 
 const Timer = () => {
   const { work } = useParams()
@@ -7,8 +9,11 @@ const Timer = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [isWork, setIsWork] = useState(true);
   const interval = useRef(null);
+  const sound = useMemo(() => new Howl({src: [tone]}), []);
 
+  // Pause/Unpause useEffect
   useEffect(() => {
+    // clear interval at beginning so it doesn't get all wonky on refresh
     clearInterval(interval.current)
     interval.current = null;
     if (!isPaused) {
@@ -21,20 +26,16 @@ const Timer = () => {
     }
   }, [isPaused])
 
+  // Work to Rest to Work useEffect
   useEffect(() => {
     if (time <= 0) {
+      // Play sound on change
+      // This is saved as memo so it doesn't have to be a dependancy
+      sound.play();
       setIsWork(!isWork)
-      if (!isWork) {
-        setTime(work);
-      } else {
-        setTime(work/5)
-      }
+      !isWork? setTime(work) : setTime(work/5);
     }
-  }, [time, isWork, work])
-
-  const handlePause = () => {
-    setIsPaused(!isPaused)
-  }
+  }, [time, sound, isWork, work])
 
   const handleReset = () => {
     setIsWork(true)
@@ -46,14 +47,13 @@ const Timer = () => {
     <div className={`h-screen flex flex-col flex-nowrap justify-center items-center ${isWork? 'bg-bdazzled':'bg-carribean'}`}>
       <h1 className={`text-9xl ${isWork? "text-saffron":"text-dim"}`}>{time} min left</h1>
       <div className="flex flex-row">
-        <button className="h-40 w-40 rounded-full m-5 bg-white text-3xl" onClick={handlePause}>
+        <button className="h-40 w-40 rounded-full m-5 bg-alabaster text-3xl" onClick={()=>setIsPaused(!isPaused)}>
           {isPaused? "Start":"Pause"}
         </button>
-        <button className="h-40 w-40 rounded-full m-5 bg-white text-3xl" onClick={handleReset}>
+        <button className="h-40 w-40 rounded-full m-5 bg-alabaster text-3xl" onClick={handleReset}>
           Reset
         </button>
       </div>
-      
     </div>
   )
 }
