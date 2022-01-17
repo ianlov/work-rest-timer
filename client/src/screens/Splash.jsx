@@ -1,6 +1,11 @@
+import { useEffect } from 'react';
 import Buttons from '../components/Buttons.jsx';
 
 const Splash = () => {
+  useEffect(() => {
+    document.title = "Work Rest Timer"
+  }, [])
+
   return (
     <div className="flex flex-col justify-center items-center h-screen bg-alabaster" >
       <div className="text-6xl font-bold flex flex-col items-center" >

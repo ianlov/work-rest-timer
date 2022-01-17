@@ -37,6 +37,11 @@ const Timer = () => {
     }
   }, [time, sound, isWork, work])
 
+  useEffect(() => {
+    let title = isWork? "Working" : "Resting";
+    document.title = title;
+  }, [isWork])
+
   const handleReset = () => {
     setIsWork(true)
     setIsPaused(true)
